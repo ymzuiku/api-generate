@@ -1,0 +1,27 @@
+{
+  "name": "@amarkdown/api-generate",
+  "version": "0.1.2",
+  "main": "lib/index.ts",
+  "types": "lib/index.ts",
+  "private": false,
+  "description": "e2e testing",
+  "dependencies": {
+    "@faker-js/faker": "^7.6.0",
+    "@testing-library/dom": "^9.2.0",
+    "@testing-library/user-event": "^14.4.3",
+    "axios": "^1.4.0",
+    "crypto-es": "^1.2.7",
+    "fs-extra": "^11.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ymzuiku/httpx.git"
+  },
+  "bugs": {
+    "url": "git+https://github.com/ymzuiku/httpx.git"
+  },
+  "homepage": "git+https://github.com/ymzuiku/httpx.git",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1"
+  }
+}
