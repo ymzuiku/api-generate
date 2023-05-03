@@ -21,3 +21,5 @@ export function upperFirst(url: string) {
 export function lowerFirst(url: string) {
   return url[0].toLowerCase() + url.slice(1);
 }
+
+export const header = "/* Don't Edit, this file is create by api-generate */";

@@ -1,26 +1,29 @@
-import { Param, schemaData } from "./schema";
-import { upperFirst, urlToName } from "./utils";
+import { ApiSignalType, Param, schemaData } from "./schema";
+import { header, upperFirst, urlToName } from "./utils";
 
-const realType = {
+const realType: Record<ApiSignalType, string> = {
   string: "string",
-  int: "int64",
+  int32: "int32",
+  int64: "int64",
   float: "float64",
-  bool: "boolean",
+  bool: "bool",
   map: "map[string]any",
   any: "any",
-  "[]string": "[]string",
-  "[]int": "[]int",
-  "[]float": "[]float",
-  "[]any": "[]any",
-  "[]bool": "[]bool",
-  "[]map": "[]map[string]any",
+  stringArray: "[]string",
+  int32Array: "[]int32",
+  int64Array: "[]int64",
+  floatArray: "[]float64",
+  anyArray: "[]any",
+  boolArray: "[]bool",
+  mapArray: "[]map[string]any",
 };
 
-export function generateServer({ dir, prefixURL = "" }: { dir: string; prefixURL?: string }) {
+export function ginServer({ dir, prefixURL = "" }: { dir: string; prefixURL?: string }) {
   const list = dir.split("/");
   const dirName = list[list.length - 1];
   let code = "";
-  code += `package ${dirName}\n
+  code += `${header}
+package ${dirName}\n
 
 import "github.com/gin-gonic/gin"\n
   `;
@@ -101,7 +104,7 @@ type ${upperFirst(apiName)}${type} struct {\n`;
       })
       `;
     } else {
-      code += `r.${method}("${url}", func(c *gin.Context) {
+      code += `r.${method}("${prefixURL + url}", func(c *gin.Context) {
         var input ${inputName}
         if err := c.ShouldBindJSON(&input); err != nil {
           c.JSON(400, map[string]any{"error": err.Error()})

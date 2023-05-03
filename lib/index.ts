@@ -1,21 +1,22 @@
 import fs from "fs-extra";
 import path from "path";
 import { cwd } from "process";
+import { actixWebServer } from "./generate-actix-web";
 import { generateClient } from "./generate-client";
-import { generateServer } from "./generate-server-go";
+import { ginServer } from "./generate-gin";
 
 export * from "./schema";
 
 export function generate({
   clientFile,
-  goFile,
-  rustFile,
+  ginFile,
+  actixWebFile,
   prefixURL,
   allSettled,
 }: {
   clientFile?: string;
-  goFile?: string;
-  rustFile?: string;
+  ginFile?: string;
+  actixWebFile?: string;
   prefixURL?: string;
   allSettled?: boolean;
 }) {
@@ -24,24 +25,24 @@ export function generate({
     fs.ensureDirSync(path.dirname(filename));
     fs.writeFile(filename, generateClient({ allSettled, prefixURL: prefixURL }));
   }
-  if (goFile) {
-    const filename = path.resolve(cwd(), goFile);
+  if (ginFile) {
+    const filename = path.resolve(cwd(), ginFile);
     fs.ensureDirSync(path.dirname(filename));
     fs.writeFile(
       filename,
-      generateServer({
-        dir: path.dirname(goFile),
+      ginServer({
+        dir: path.dirname(ginFile),
         prefixURL: prefixURL,
       }),
     );
   }
-  if (rustFile) {
-    const filename = path.resolve(cwd(), rustFile);
+  if (actixWebFile) {
+    const filename = path.resolve(cwd(), actixWebFile);
     fs.ensureDirSync(path.dirname(filename));
     fs.writeFile(
       filename,
-      generateServer({
-        dir: path.dirname(rustFile),
+      actixWebServer({
+        dir: path.dirname(actixWebFile),
         prefixURL: prefixURL,
       }),
     );

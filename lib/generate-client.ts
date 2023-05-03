@@ -1,26 +1,27 @@
-import { Param, schemaData } from "./schema";
-import { lowerFirst, urlToName } from "./utils";
+import { ApiSignalType, Param, schemaData } from "./schema";
+import { header, lowerFirst, urlToName } from "./utils";
 
-const realType = {
+const realType: Record<ApiSignalType, string> = {
   string: "string",
-  int: "number",
+  int32: "number",
+  int64: "bigint",
   float: "number",
   bool: "boolean",
   map: "Record<string, unknown>",
   any: "any",
-  "[]string": "string[]",
-  "[]int": "number[]",
-  "[]float": "number[]",
-  "[]any": "any[]",
-  "[]bool": "boolean[]",
-  "[]map": "Record<string, unknown>[]",
+  stringArray: "string[]",
+  int32Array: "number[]",
+  int64Array: "bigint[]",
+  floatArray: "number[]",
+  anyArray: "any[]",
+  boolArray: "boolean[]",
+  mapArray: "Record<string, unknown>[]",
 };
 
 export function generateClient({ allSettled = false, prefixURL = "" }: { allSettled?: boolean; prefixURL?: string }) {
   let code = "";
-  code += `/* eslint-disable @typescript-eslint/no-unused-vars */
-  /* eslint-disable @typescript-eslint/no-empty-interface */
-  /* eslint-disable @typescript-eslint/no-explicit-any */
+  code += `${header}
+/* eslint-disable */
 
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 `;
