@@ -82,7 +82,7 @@ type ${upperFirst(apiName)}${type} struct {\n`;
     if (description) {
       code += `// ${description}\n`;
     }
-    code += `${apiName}(input *${inputName}) *${outputName}`;
+    code += `${apiName}(input *${inputName}) *${outputName}\n`;
   });
   // Hello(input HelloInput) HelloOutput
   code += "\n}\n";

@@ -22,7 +22,7 @@ export interface Param {
   name: string;
   description?: string;
   type: ApiType;
-  options?: boolean;
+  optional?: boolean;
   min?: number;
   max?: number;
   regex?: string;

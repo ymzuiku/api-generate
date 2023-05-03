@@ -1,50 +1,57 @@
 import fs from "fs-extra";
 import path from "path";
 import { cwd } from "process";
-import { actixWebServer } from "./generate-actix-web";
 import { generateClient } from "./generate-client";
 import { ginServer } from "./generate-gin";
+import { execCli } from "./utils";
 
 export * from "./schema";
 
 export function generate({
   clientFile,
+  clientFormat,
   ginFile,
+  ginFormat,
   actixWebFile,
   prefixURL,
   allSettled,
 }: {
+  // web-client
   clientFile?: string;
-  ginFile?: string;
-  actixWebFile?: string;
-  prefixURL?: string;
+  clientFormat?: string;
   allSettled?: boolean;
+  // go-gin
+  ginFile?: string;
+  ginFormat?: string;
+  // rust-actix-web
+  actixWebFile?: string;
+  actixWebFormat?: string;
+  // options
+  prefixURL?: string;
 }) {
   if (clientFile) {
     const filename = path.resolve(cwd(), clientFile);
     fs.ensureDirSync(path.dirname(filename));
-    fs.writeFile(filename, generateClient({ allSettled, prefixURL: prefixURL }));
+    fs.writeFileSync(filename, generateClient({ allSettled, prefixURL: prefixURL }));
+    if (clientFormat) {
+      execCli(clientFormat.replace("$file", filename));
+    }
   }
   if (ginFile) {
     const filename = path.resolve(cwd(), ginFile);
     fs.ensureDirSync(path.dirname(filename));
-    fs.writeFile(
+    fs.writeFileSync(
       filename,
       ginServer({
         dir: path.dirname(ginFile),
         prefixURL: prefixURL,
       }),
     );
+    if (ginFormat) {
+      execCli(ginFormat.replace("$file", filename));
+    }
   }
   if (actixWebFile) {
-    const filename = path.resolve(cwd(), actixWebFile);
-    fs.ensureDirSync(path.dirname(filename));
-    fs.writeFile(
-      filename,
-      actixWebServer({
-        dir: path.dirname(actixWebFile),
-        prefixURL: prefixURL,
-      }),
-    );
+    //
   }
 }
