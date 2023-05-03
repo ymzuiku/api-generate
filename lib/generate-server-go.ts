@@ -1,16 +1,6 @@
 import { Param, schemaData } from "./schema";
 import { upperFirst, urlToName } from "./utils";
 
-/**
- 
-type Hello struct {
-	Name string `json:"name" binding:"required"`
-	Age  int    `json:"age" binding:"min=1,max=120"`
-}
-
-
- */
-
 const realType = {
   string: "string",
   int: "int64",
@@ -26,7 +16,7 @@ const realType = {
   "[]map": "[]map[string]any",
 };
 
-export function generateServer({ dir, trimUrlName = "" }: { dir: string; trimUrlName?: string }) {
+export function generateServer({ dir, prefixURL = "" }: { dir: string; prefixURL?: string }) {
   const list = dir.split("/");
   const dirName = list[list.length - 1];
   let code = "";
@@ -38,7 +28,7 @@ import "github.com/gin-gonic/gin"\n
   const apiNameSet = new Set<string>();
   schemaData.forEach(async (schema) => {
     const { url, input, output } = schema;
-    const apiName = urlToName(url.replace(trimUrlName, ""));
+    const apiName = urlToName(url);
     if (apiNameSet.has(apiName)) {
       throw new Error(`The ${apiName} entered is already taken. Please choose a different name.`);
     }
@@ -83,7 +73,7 @@ type ${upperFirst(apiName)}${type} struct {\n`;
   code += `type Apis interface {\n`;
   schemaData.forEach(async (schema) => {
     const { description, url } = schema;
-    const apiName = urlToName(url.replace(trimUrlName, ""));
+    const apiName = urlToName(url);
     const inputName = `${apiName}Input`;
     const outputName = `${apiName}Output`;
     if (description) {
@@ -96,11 +86,11 @@ type ${upperFirst(apiName)}${type} struct {\n`;
   code += `func BindHandles(r *gin.Engine, apis Apis) {\n`;
   schemaData.forEach(async (schema) => {
     const { method, url } = schema;
-    const apiName = urlToName(url.replace(trimUrlName, ""));
+    const apiName = urlToName(url);
     const inputName = `${apiName}Input`;
 
     if (method === "GET") {
-      code += `r.${method}("${url}", func(c *gin.Context) {
+      code += `r.${method}("${prefixURL + url}", func(c *gin.Context) {
         var input ${inputName}
         if err := c.ShouldBindQuery(&input); err != nil {
           c.JSON(400, map[string]any{"error": err.Error()})

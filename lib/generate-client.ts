@@ -16,13 +16,7 @@ const realType = {
   "[]map": "Record<string, unknown>[]",
 };
 
-export function generateClient({
-  allSettled = false,
-  trimUrlName = "",
-}: {
-  allSettled?: boolean;
-  trimUrlName?: string;
-}) {
+export function generateClient({ allSettled = false, prefixURL = "" }: { allSettled?: boolean; prefixURL?: string }) {
   let code = "";
   code += `/* eslint-disable @typescript-eslint/no-unused-vars */
   /* eslint-disable @typescript-eslint/no-empty-interface */
@@ -101,7 +95,7 @@ export const adapter = {
   const apiNameSet = new Set<string>();
   schemaData.forEach(async (schema) => {
     const { description, url, method, input, output } = schema;
-    const apiName = urlToName(url.replace(trimUrlName, ""));
+    const apiName = urlToName(url);
     if (apiNameSet.has(apiName)) {
       throw new Error(`The ${apiName} entered is already taken. Please choose a different name.`);
     }
@@ -148,12 +142,12 @@ export const adapter = {
       allSettled ? `Promise<[PromiseSettledResult<${outputName}>][0]>` : `Promise<${outputName}>`
     } {
   return adapter.fetch({
-    url:"${url}",
+    url:"${prefixURL + url}",
     method:"${method}",
     input,
   }, options) as any;
 }
-${lowerFirst(apiName)}.url = "${url}";
+${lowerFirst(apiName)}.url = "${prefixURL + url}";
 ${lowerFirst(apiName)}.method = "${method}";
     `;
   });
