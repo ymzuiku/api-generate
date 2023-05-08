@@ -1,6 +1,6 @@
 type Method = "POST" | "GET" | "DELETE" | "PUT" | "PATCH";
 
-export type ApiSignalType =
+export type ApiType =
   | "string"
   | "int32"
   | "int64"
@@ -16,17 +16,17 @@ export type ApiSignalType =
   | "floatArray"
   | "mapArray";
 
-export type ApiType = ApiSignalType | Param[];
-
-export interface Param {
-  name: string;
+export interface Field {
+  key: string;
   description?: string;
-  type: ApiType;
+  type?: ApiType;
+  typeOfObject?: Field[];
+  typeOfObjectArray?: Field[];
   optional?: boolean;
+  regex?: string;
+  enum?: string[];
   min?: number;
   max?: number;
-  regex?: string;
-  pick?: string[];
 }
 
 export const schemaData: Schema[] = [];
@@ -35,8 +35,8 @@ interface Schema {
   description?: string;
   url: string;
   method: Method;
-  input: Param[];
-  output: Param[];
+  input: Field[];
+  output: Field[];
 }
 
 export function schema(data: Schema) {

@@ -3,9 +3,14 @@ import path from "path";
 import { cwd } from "process";
 import { generateClient } from "./generate-client";
 import { ginServer } from "./generate-gin";
+import { Field } from "./schema";
 import { execCli } from "./utils";
 
 export * from "./schema";
+
+export function field(v: Field) {
+  return v;
+}
 
 export function generate({
   clientFile,

@@ -1,19 +1,24 @@
 import { spawn } from "child_process";
+import { ApiType } from "./schema";
 
-export function urlToName(url: string) {
-  const parts = url.split("/");
+function _urlToName(url: string, tag: string) {
+  const parts = url.split(tag);
   const nameParts = [];
 
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
 
     if (part.length > 0) {
-      const namePart = part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+      const namePart = part.charAt(0).toUpperCase() + part.slice(1);
       nameParts.push(namePart);
     }
   }
 
   return nameParts.join("");
+}
+
+export function urlToName(url: string) {
+  return _urlToName(_urlToName(_urlToName(url, "-"), "_"), "/");
 }
 
 export function upperFirst(url: string) {
@@ -42,3 +47,9 @@ export function execCli(str: string) {
     console.log(`close: ${code}`);
   });
 }
+
+export const isNumberType: Record<ApiType, boolean> = {
+  int32: true,
+  int64: true,
+  float: true,
+} as unknown as Record<ApiType, boolean>;
